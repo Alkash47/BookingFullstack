@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "meeting-room-booking"
+version = "0.1.0"
+description = "Booking service for meeting rooms (FastAPI)"
+authors = ["Your Name <you@example.com>"]
+license = "MIT"
+packages = [
+  { include = "app" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.136.3"
+uvicorn = {extras = ["standard"], version = "^0.22.0"}
+sqlmodel = "^0.0.38"
+pydantic = "^2.13.4"
+python-jose = "^3.3.0"
+passlib = {extras=["bcrypt"], version = "^1.7.4"}
+python-multipart = "^0.0.32"
+
+[tool.poetry.dev-dependencies]
+pytest = "^9.0.3"
+httpx = "^0.24.0"
+pytest-asyncio = "^1.4.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
