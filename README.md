@@ -1,3 +1,5 @@
+[English](README.md) | [Русский](README.ru.md)
+
 # Meeting Room Booking Service
 
 Simple FastAPI service for booking meeting rooms.

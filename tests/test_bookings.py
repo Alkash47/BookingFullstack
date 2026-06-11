@@ -23,3 +23,13 @@ def test_create_and_delete_booking():
     admin_headers = {"Authorization": f"Bearer {admin_token}"}
     rdel = client.delete(f"/bookings/{booking_id}", headers=admin_headers)
     assert rdel.status_code == 200
+
+
+def test_initial_data_is_present():
+    """Проверяем, что начальные данные (комнаты) доступны через API."""
+    today = datetime.date.today().isoformat()
+    r = client.get(f"/rooms?date={today}")
+    assert r.status_code == 200
+    data = r.json()
+    assert len(data) == 2
+    assert data[0]["name"] == "Room A"

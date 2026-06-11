@@ -1,5 +1,6 @@
 import asyncio
 import pytest
+from app.database import AsyncSessionLocal
 import os
 
 
@@ -13,10 +14,7 @@ def setup_database():
     from app.database import init_db
     asyncio.run(init_db())
     
-    from app.database import AsyncSessionLocal
-    from app.models import Room
     from app import crud, auth
-    from sqlalchemy import select
     
     async def init_data():
         async with AsyncSessionLocal() as session:
@@ -31,3 +29,10 @@ def setup_database():
     
     asyncio.run(init_data())
     yield
+
+
+@pytest.fixture
+async def db_session():
+    """Фикстура, предоставляющая асинхронную сессию БД для теста."""
+    async with AsyncSessionLocal() as session:
+        yield session
