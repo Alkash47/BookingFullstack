@@ -9,8 +9,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Копируем весь проект
 COPY . /app
 
-# Открываем порт (Railway сам подставит $PORT)
+# Даём скрипту права на выполнение
+RUN chmod +x /app/start.sh
+
+# Открываем порт
 EXPOSE 8000
 
-# Запуск — Railway передаёт PORT через переменную окружения
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Запуск через shell-скрипт (гарантированно раскрывает $PORT)
+CMD ["/app/start.sh"]
