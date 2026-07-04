@@ -4,9 +4,17 @@ import os
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
-SECRET_KEY = os.getenv("SECRET_KEY", "change-me-in-prod")
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    # В локальной разработке разрешаем дефолтный ключ, в продакшене — нет
+    import sys
+    if os.getenv("RAILWAY_ENVIRONMENT") or os.getenv("PRODUCTION"):
+        raise RuntimeError("SECRET_KEY environment variable is required in production!")
+    SECRET_KEY = "local-dev-insecure-key"
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
 
 # Используем pbkdf2_sha256, чтобы избежать проблем с бинарными зависимостями bcrypt на некоторых системах
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")

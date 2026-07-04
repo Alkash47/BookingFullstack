@@ -1,8 +1,8 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from datetime import date
-from .models import User, Room, Booking
+from datetime import date, time
+from .models import User, Room, Booking, Slot
 
 
 async def get_user_by_username(session: AsyncSession, username: str):
@@ -31,18 +31,65 @@ async def get_room(session: AsyncSession, room_id: int):
     return await session.get(Room, room_id)
 
 
-async def create_room(session: AsyncSession, name: str, slots: str):
+async def create_room(
+    session: AsyncSession,
+    name: str,
+    slots: str,
+    price: int = 1000,
+    description: str | None = None,
+    capacity: str | None = None,
+    image_url: str | None = None,
+):
     """Создать новую комнату и сохранить её в базе данных."""
-    room = Room(name=name, slots=slots)
+    room = Room(
+        name=name,
+        slots=slots,
+        price=price,
+        description=description,
+        capacity=capacity,
+        image_url=image_url,
+    )
     session.add(room)
     await session.commit()
     await session.refresh(room)
     return room
 
 
-async def create_booking(session: AsyncSession, user_id: int, room_id: int, date_: date, slot_id: int):
-    """Создать бронирование комнаты на указанный слот."""
-    booking = Booking(user_id=user_id, room_id=room_id, date=date_, slot_id=slot_id)
+async def update_room(session: AsyncSession, room: Room, updates: dict):
+    """Обновить параметры комнаты."""
+    for key, value in updates.items():
+        if value is not None:
+            setattr(room, key, value)
+    session.add(room)
+    await session.commit()
+    await session.refresh(room)
+    return room
+
+
+async def delete_room(session: AsyncSession, room: Room):
+    """Удалить комнату."""
+    await session.delete(room)
+    await session.commit()
+
+
+async def create_slot(session: AsyncSession, start_time: time, end_time: time):
+    """Создать новый временной слот."""
+    slot = Slot(start_time=start_time, end_time=end_time)
+    session.add(slot)
+    await session.commit()
+    await session.refresh(slot)
+    return slot
+
+
+async def list_slots(session: AsyncSession):
+    """Получить список всех временных слотов."""
+    result = await session.execute(select(Slot).order_by(Slot.start_time))
+    return result.scalars().all()
+
+
+async def create_booking(session: AsyncSession, user_id: int, room_id: int, date_: date, start_time: time, end_time: time):
+    """Создать бронирование комнаты на указанный интервал времени."""
+    booking = Booking(user_id=user_id, room_id=room_id, date=date_, start_time=start_time, end_time=end_time)
     session.add(booking)
     try:
         await session.commit()
@@ -53,9 +100,14 @@ async def create_booking(session: AsyncSession, user_id: int, room_id: int, date
     return booking
 
 
-async def find_booking_conflict(session: AsyncSession, room_id: int, date_: date, slot_id: int):
-    """Проверить, существует ли конфликт бронирования для заданного слота."""
+async def find_booking_conflict(session: AsyncSession, room_id: int, date_: date, start_time: time, end_time: time):
+    """Проверить, существует ли конфликт бронирования (пересечение интервалов)."""
     result = await session.execute(
-        select(Booking).where(Booking.room_id == room_id, Booking.date == date_, Booking.slot_id == slot_id)
+        select(Booking).where(
+            Booking.room_id == room_id,
+            Booking.date == date_,
+            Booking.start_time < end_time,
+            Booking.end_time > start_time
+        )
     )
     return result.scalars().first()

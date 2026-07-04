@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS // Аренда умных переговорных комнат внутри офиса</title>
+    <meta name="description" content="Забронируйте премиальные, акустически изолированные переговорные комнаты с умным оборудованием. Почасовая оплата, мгновенный доступ, современный B&W дизайн.">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- --- HEADER --- -->
+    <header id="header">
+        <div class="container">
+            <a href="#" class="logo">
+                NEXUS
+                <span class="logo-dot"></span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#rooms">Переговорные</a></li>
+                    <li><a href="#calculator">Калькулятор</a></li>
+                    <li><a href="#amenities">Удобства</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Переключить тему">
+                    <span class="theme-toggle-thumb"></span>
+                </button>
+                <!-- Кнопка авторизации / профиля -->
+                <button class="btn btn-secondary auth-header-btn" id="auth-header-btn" style="padding: 0.5rem 1.25rem; font-size: 0.85rem;">Войти</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- --- HERO SECTION --- -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-layout">
+                <div class="hero-content">
+                    <span class="badge">Умный офис нового поколения</span>
+                    <h1 class="text-gradient">Пространство для ваших идей и решений.</h1>
+                    <p>Премиальные переговорные комнаты внутри офисного центра с технологичным оснащением, идеальной шумоизоляцией и мгновенным бронированием от 1 часа.</p>
+                    <div class="hero-ctas">
+                        <a href="#calculator" class="btn btn-primary">Подобрать комнату</a>
+                        <a href="#rooms" class="btn btn-secondary">Смотреть переговорные</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <h3 id="stat-rooms">12</h3>
+                            <p>Умных зон</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3 id="stat-db">35дБ</h3>
+                            <p>Шумоизоляция</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3 id="stat-satisfaction">99%</h3>
+                            <p>Удобство</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-media">
+                    <img src="images/glass_box.png" alt="Современная переговорная комната в черно-белых тонах">
+                    <div class="hero-floating-card">
+                        <div>
+                            <h4>Executive Room</h4>
+                            <p>Свободно до 12:00</p>
+                        </div>
+                        <span class="badge" style="margin: 0; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2);">Активно</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- ROOMS SECTION --- -->
+    <section id="rooms" class="rooms-section section-padding">
+        <div class="container">
+            <div class="section-header">
+                <span class="badge">Каталог зон</span>
+                <h2>Выберите ваш format встречи</h2>
+                <p>От уединенных кабин для сфокусированной работы до просторных залов для ключевых переговоров совета директоров.</p>
+            </div>
+
+            <div class="rooms-explorer" id="rooms-explorer">
+                <div class="rooms-tabs" id="catalog-rooms-tabs">
+                    <!-- Dynamic tabs will be loaded here -->
+                </div>
+
+                <div class="room-details-container" id="catalog-rooms-details">
+                    <!-- Dynamic details panels will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- CALCULATOR & PLANNER SECTION --- -->
+    <section id="calculator" class="calc-section section-padding">
+        <div class="container">
+            <div class="section-header">
+                <span class="badge">Гибкий расчет</span>
+                <h2>Интерактивный расчет стоимости</h2>
+                <p>Настройте параметры встречи в реальном времени и получите точную смету без скрытых комиссий.</p>
+            </div>
+
+            <div class="calc-card">
+                <div class="calc-grid">
+                    <div class="calc-inputs">
+                        <!-- Step 1: Select Room -->
+                        <div class="input-group step-group" id="step-1-group">
+                            <div class="step-header">
+                                <label class="input-label">Шаг 1: Выберите тип зоны</label>
+                                <span class="step-toggle-icon">▲</span>
+                            </div>
+                            <div class="step-content" id="step-1-content">
+                                <div class="options-grid" id="calc-room-selector">
+                                    <div class="option-btn selected" data-value="focus" data-price="800">
+                                        <span>Focus Room</span>
+                                    </div>
+                                    <div class="option-btn" data-value="collab" data-price="1500">
+                                        <span>Collab Hub</span>
+                                    </div>
+                                    <div class="option-btn" data-value="boardroom" data-price="3000">
+                                        <span>Boardroom</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Select Date -->
+                        <div class="input-group step-group" id="step-2-group">
+                            <div class="step-header">
+                                <label class="input-label">Шаг 2: Выберите дату встречи</label>
+                                <span class="step-toggle-icon">▲</span>
+                            </div>
+                            <div class="step-content" id="step-2-content">
+                                <div class="date-selector" id="calc-date-selector">
+                                    <!-- Dates will be dynamically rendered via JS to keep dates relevant -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Select Booking Time -->
+                        <div class="input-group step-group" id="step-3-group">
+                            <div class="step-header">
+                                <label class="input-label">Шаг 3: Выберите время встречи</label>
+                                <span class="step-toggle-icon">▲</span>
+                            </div>
+                            <div class="step-content" id="step-3-content">
+                                <div class="timeline-container" style="margin-top: 1rem; margin-bottom: 1.5rem;">
+                                    <div class="timeline-label-wrapper" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                        <span>Выбор времени (таймлайн)</span>
+                                    </div>
+                                    
+                                    <div class="timeline-slider-wrapper">
+                                        <div class="timeline-track-bg"></div>
+                                        <div class="timeline-occupied-slots" id="timeline-occupied-slots"></div>
+                                        <div class="timeline-selected-range" id="timeline-selected-range"></div>
+                                        
+                                        <input type="range" id="timeline-start-val" class="timeline-thumb-input" min="480" max="1320" step="5" value="540" aria-label="Время начала">
+                                        <input type="range" id="timeline-end-val" class="timeline-thumb-input" min="480" max="1320" step="5" value="600" aria-label="Время окончания">
+                                    </div>
+                                    
+                                    <div class="timeline-labels">
+                                        <span>08:00</span>
+                                        <span>10:00</span>
+                                        <span>12:00</span>
+                                        <span>14:00</span>
+                                        <span>16:00</span>
+                                        <span>18:00</span>
+                                        <span>20:00</span>
+                                        <span>22:00</span>
+                                    </div>
+                                </div>
+
+                                <div class="booked-times-container" id="booked-times-container" style="display: none; padding: 1.25rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                                    <div class="input-label" style="text-transform: none; font-size: 0.8rem; margin-bottom: 0.75rem;">Занятое время на выбранную дату:</div>
+                                    <div id="booked-times-list" style="font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                                        <!-- Populated dynamically -->
+                                    </div>
+                                </div>
+                                
+                                <div class="time-status-message" id="time-status-message" style="margin-top: 1rem; font-size: 0.85rem; display: none;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: Optional Extras -->
+                        <div class="input-group step-group" id="step-4-group">
+                            <div class="step-header">
+                                <label class="input-label">Шаг 4: Дополнительные опции</label>
+                                <span class="step-toggle-icon">▲</span>
+                            </div>
+                            <div class="step-content" id="step-4-content">
+                                <div class="options-grid" id="calc-extras">
+                                    <div class="option-btn" data-extra-id="catering" data-extra-price="400">
+                                        <span>Кофе-брейк (+400₽/ч)</span>
+                                    </div>
+                                    <div class="option-btn" data-extra-id="records" data-extra-price="200">
+                                        <span>Запись & Трансляция (+200₽/ч)</span>
+                                    </div>
+                                    <div class="option-btn" data-extra-id="assistant" data-extra-price="500">
+                                        <span>Ассистент (+500₽/ч)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary Area -->
+                    <div class="calc-summary">
+                        <div class="summary-card">
+                            <h3 class="summary-title">Детализация бронирования</h3>
+                            <div class="summary-row">
+                                <span>Переговорная комната:</span>
+                                <span class="bold" id="summary-room-name">Focus Room</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Дата:</span>
+                                <span class="bold" id="summary-date">-</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Выбранные слоты:</span>
+                                <span class="bold" id="summary-slots">не выбраны</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Тариф переговорной:</span>
+                                <span class="bold" id="summary-room-rate">800 ₽/ч</span>
+                            </div>
+                            <div class="summary-row" id="summary-extras-row" style="display: none;">
+                                <span>Дополнительные опции:</span>
+                                <span class="bold" id="summary-extras-val">0 ₽/ч</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Итого к оплате:</span>
+                                <span class="price text-gradient" id="summary-total-price">0 ₽</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="open-booking-modal" style="width: 100%;">Перейти к оформлению</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- MY BOOKINGS SECTION --- -->
+    <section id="my-bookings" class="my-bookings-section section-padding" style="display: none;">
+        <div class="container">
+            <div class="section-header">
+                <span class="badge">Личный кабинет</span>
+                <h2>Мои бронирования</h2>
+                <p>Управляйте вашими активными бронированиями переговорных комнат.</p>
+            </div>
+            <div class="bookings-list" id="bookings-list">
+                <!-- Bookings loaded dynamically -->
+            </div>
+            <div class="bookings-empty" id="bookings-empty" style="display: none;">
+                <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <h3>Нет активных бронирований</h3>
+                    <p>Забронируйте переговорную комнату с помощью <a href="#calculator" style="color: var(--text-primary); text-decoration: underline;">калькулятора</a>.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- ADMIN PANEL SECTION --- -->
+    <section id="admin-panel" class="admin-panel-section section-padding" style="display: none; background: var(--bg-secondary); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+        <div class="container">
+            <div class="section-header">
+                <span class="badge">Панель управления</span>
+                <h2>Управление комнатами и тарифами</h2>
+                <p>Добавляйте новые переговорные зоны и редактируйте стоимость аренды в реальном времени.</p>
+            </div>
+            
+            <div style="margin-bottom: 2rem;">
+                <button class="btn btn-primary" id="admin-add-room-btn">Добавить новую комнату</button>
+            </div>
+
+            <div class="admin-rooms-list" id="admin-rooms-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
+                <!-- Dynamically loaded admin rooms cards -->
+            </div>
+        </div>
+    </section>
+
+    <!-- --- AMENITIES / FEATURES SECTION --- -->
+    <section id="amenities" class="features-section section-padding">
+        <div class="container">
+            <div class="section-header">
+                <span class="badge">Включено в стоимость</span>
+                <h2>Превосходство в каждой детали</h2>
+                <p>Мы спроектировали пространства так, чтобы вы не отвлекались ни на одну организационную мелочь.</p>
+            </div>
+
+            <div class="grid-3">
+                <!-- Feature 1 -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01"/><path d="M8.5 16.5c3.5-3.5 3.5-3.5 7 0"/><path d="M5 13c5-5 5-5 10 0"/><path d="M1.5 9.5c7-7 7-7 14 0"/></svg>
+                    </div>
+                    <h3>Гигабитный Wi-Fi</h3>
+                    <p>Выделенный защищенный беспроводной канал с резервной линией. Никаких прерываний связи во время международных звонков.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+                    </div>
+                    <h3>Умные 4K панели</h3>
+                    <p>Проводное и беспроводное дублирование экрана со звуком. Поддержка Apple AirPlay, Chromecast и Miracast.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 17v-5a3 3 0 0 1 6 0v5"/></svg>
+                    </div>
+                    <h3>Звукоизоляция 40 дБ</h3>
+                    <p>Конфиденциальность превыше всего. Специальное акустическое напыление стен и двойные стеклопакеты исключают утечку звука.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 15h6"/><path d="M9 11h6"/></svg>
+                    </div>
+                    <h3>Стекло для заметок</h3>
+                    <p>Пишите прямо на стенах. Вместо громоздких флипчартов — стеклянные маркерные поверхности во всю стену для визуализации идей.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" x2="6" y1="2" y2="4"/><line x1="10" x2="10" y1="2" y2="4"/><line x1="14" x2="14" y1="2" y2="4"/></svg>
+                    </div>
+                    <h3>Кофе-поинт</h3>
+                    <p>Свежеобжаренный зерновой кофе премиального бренда, листовой чай, вода с лимоном и легкие закуски всегда в неограниченном доступе.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <h3>Доступ 24/7</h3>
+                    <p>Электронный замок, интегрированный с вашей бронью. Входите с помощью NFC или пин-кода из SMS в любое удобное время.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- TESTIMONIALS SECTION --- -->
+    <section class="testimonials-section section-padding">
+        <div class="container">
+            <div class="testimonial-slider-wrapper">
+                <div class="testimonial-track" id="testimonial-track">
+                    <!-- Slide 1 -->
+                    <div class="testimonial-slide">
+                        <div class="testimonial-quote">«NEXUS полностью решил нашу проблему с переговорами. Шумоизоляция идеальна — за стеной не слышно даже громкого обсуждения. Умное подключение экрана сработало за 3 секунды без переходников.»</div>
+                        <div class="testimonial-author">
+                            <span class="author-name">Александр Кравцов</span>
+                            <span class="author-company">CEO, Digital Solutions</span>
+                        </div>
+                    </div>
+                    <!-- Slide 2 -->
+                    <div class="testimonial-slide">
+                        <div class="testimonial-quote">«Арендуем Focus Room для онлайн-презентаций инвесторам. Качество света и камеры в комнате создает ощущение профессиональной телестудии. Рекомендую всем, кто ценит имидж.»</div>
+                        <div class="testimonial-author">
+                            <span class="author-name">Мария Шевченко</span>
+                            <span class="author-company">Co-founder, EdTech Space</span>
+                        </div>
+                    </div>
+                    <!-- Slide 3 -->
+                    <div class="testimonial-slide">
+                        <div class="testimonial-quote">«Сервис бронирования восхищает своей простотой. Никаких звонков администраторам — оплатил в калькуляторе, получил код доступа на телефон, зашел и работаешь.»</div>
+                        <div class="testimonial-author">
+                            <span class="author-name">Дмитрий Вернер</span>
+                            <span class="author-company">Product Director, FinTech Lab</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="slider-controls">
+                    <button class="btn-icon" id="prev-slide" aria-label="Предыдущий слайд">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" x2="5" y1="12" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    </button>
+                    <button class="btn-icon" id="next-slide" aria-label="Следующий слайд">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" x2="19" y1="12" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- FAQ SECTION --- -->
+    <section id="faq" class="faq-section section-padding">
+        <div class="container">
+            <div class="section-header" style="margin-left: auto; margin-right: auto; text-align: center;">
+                <span class="badge">Частые вопросы</span>
+                <h2>Остались вопросы?</h2>
+                <p>Мы собрали детальные ответы на самые популярные вопросы о бронировании и использовании комнат.</p>
+            </div>
+
+            <div class="faq-list">
+                <!-- Item 1 -->
+                <div class="faq-item">
+                    <button class="faq-question-btn">
+                        <span>Как я получу доступ в забронированную комнату?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>После успешной оплаты и подтверждения бронирования, на указанный вами номер телефона придет SMS с уникальным PIN-кодом, а также ссылка для бесконтактного открытия замка через NFC в веб-интерфейсе смартфона. Доступ активируется ровно за 10 минут до начала брони.</p>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="faq-item">
+                    <button class="faq-question-btn">
+                        <span>Включено ли оборудование и напитки в стоимость аренды?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Да, в базовую стоимость аренды полностью включено использование всего установленного в комнате оборудования (экраны, камеры, маркерное стекло, спикерфоны), а также доступ к кофе-поинту (зерновой кофе, чай, вода с лимоном, снэки). Дополнительно оплачиваются только особые запросы (кейтеринг, персональное ассистирование).</p>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="faq-item">
+                    <button class="faq-question-btn">
+                        <span>Можно ли продлить аренду переговорной прямо во время встречи?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Да, вы можете продлить время аренды через веб-интерфейс или умный настенный планшет управления внутри самой переговорной, если следующее время в календаре свободно. Продление возможно шагом в 30 минут с оплатой привязанной картой.</p>
+                    </div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="faq-item">
+                    <button class="faq-question-btn">
+                        <span>Каковы условия отмены бронирования?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Вы можете бесплатно отменить или перенести бронирование в личном кабинете не менее чем за 12 часов до начала встречи. В этом случае средства вернутся на вашу карту в полном объеме. При отмене менее чем за 12 часов удерживается 50% стоимости аренды.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- FOOTER --- -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        NEXUS
+                        <span class="logo-dot"></span>
+                    </a>
+                    <p>Премиальное пространство для продуктивных переговоров, встреч и персональной сфокусированной работы.</p>
+                    <div class="footer-socials">
+                        <a href="#" class="btn-icon" aria-label="Telegram" style="width: 38px; height: 38px;">TG</a>
+                        <a href="#" class="btn-icon" aria-label="VK" style="width: 38px; height: 38px;">VK</a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Комнаты</h4>
+                    <ul>
+                        <li><a href="#rooms">Focus Room</a></li>
+                        <li><a href="#rooms">Collaboration Hub</a></li>
+                        <li><a href="#rooms">Executive Boardroom</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Навигация</h4>
+                    <ul>
+                        <li><a href="#rooms">Каталог</a></li>
+                        <li><a href="#calculator">Калькулятор</a></li>
+                        <li><a href="#amenities">Услуги и удобства</a></li>
+                        <li><a href="#faq">Вопросы и ответы</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Контакты</h4>
+                    <ul>
+                        <li><span style="color: var(--text-secondary);">Адрес:</span> Пресненская наб. 12, Москва-Сити, башня «Федерация»</li>
+                        <li><span style="color: var(--text-secondary);">Телефон:</span> +7 (495) 123-45-67</li>
+                        <li><span style="color: var(--text-secondary);">Email:</span> book@nexus-space.ru</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 NEXUS. Все права защищены.</p>
+                <div class="footer-links">
+                    <a href="#">Политика конфиденциальности</a>
+                    <a href="#">Пользовательское соглашение</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- --- AUTH MODAL DIALOG --- -->
+    <div class="modal-overlay" id="auth-modal-overlay">
+        <div class="modal-card" id="auth-modal-card">
+            <button class="modal-close-btn" id="close-auth-modal" aria-label="Закрыть">&times;</button>
+
+            <!-- Login Form -->
+            <div id="auth-login-state">
+                <div class="modal-header">
+                    <h3>Вход в аккаунт</h3>
+                    <p>Войдите, чтобы бронировать комнаты и управлять бронированиями.</p>
+                </div>
+                <form class="modal-form" id="login-form" onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="login-username">Имя пользователя</label>
+                        <input type="text" id="login-username" class="form-input" placeholder="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Пароль</label>
+                        <input type="password" id="login-password" class="form-input" placeholder="••••••••" required>
+                    </div>
+                    <div class="auth-error" id="login-error" style="display: none;"></div>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem; width: 100%;" id="login-submit-btn">Войти</button>
+                    <p class="auth-switch">Нет аккаунта? <a href="#" id="switch-to-register">Зарегистрироваться</a></p>
+                </form>
+            </div>
+
+            <!-- Register Form -->
+            <div id="auth-register-state" style="display: none;">
+                <div class="modal-header">
+                    <h3>Регистрация</h3>
+                    <p>Создайте аккаунт для бронирования переговорных комнат.</p>
+                </div>
+                <form class="modal-form" id="register-form" onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="reg-fullname">Имя и фамилия</label>
+                        <input type="text" id="reg-fullname" class="form-input" placeholder="Иван Иванов" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-username">Имя пользователя</label>
+                        <input type="text" id="reg-username" class="form-input" placeholder="ivan" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password">Пароль</label>
+                        <input type="password" id="reg-password" class="form-input" placeholder="••••••••" required>
+                    </div>
+                    <div class="auth-error" id="register-error" style="display: none;"></div>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem; width: 100%;" id="register-submit-btn">Создать аккаунт</button>
+                    <p class="auth-switch">Уже есть аккаунт? <a href="#" id="switch-to-login">Войти</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- BOOKING MODAL DIALOG --- -->
+    <div class="modal-overlay" id="booking-modal-overlay">
+        <div class="modal-card" id="booking-modal-card">
+            <button class="modal-close-btn" id="close-booking-modal" aria-label="Закрыть модальное окно">&times;</button>
+            
+            <!-- Dynamic State 1: Fill Form -->
+            <div id="modal-form-state">
+                <div class="modal-header">
+                    <h3>Завершение бронирования</h3>
+                    <p>Подтвердите выбранные параметры для бронирования.</p>
+                </div>
+                <div class="booking-confirm-details" id="booking-confirm-details">
+                    <!-- Filled dynamically -->
+                </div>
+                <button class="btn btn-primary" style="margin-top: 1.5rem; width: 100%;" id="confirm-booking-btn">Подтвердить бронирование</button>
+            </div>
+
+            <!-- Dynamic State 2: Success -->
+            <div class="modal-success-state" id="modal-success-state">
+                <div class="success-icon-wrapper">✓</div>
+                <h3 class="success-title">Успешно забронировано!</h3>
+                <p class="success-desc">Мы зарезервировали переговорную комнату для вас. Детали бронирования доступны в разделе «Мои бронирования».</p>
+                <button class="btn btn-secondary" id="close-success-btn" style="width: 100%;">Отлично</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- ADMIN ROOM MODAL DIALOG --- -->
+    <div class="modal-overlay" id="admin-room-modal-overlay">
+        <div class="modal-card" id="admin-room-modal-card">
+            <button class="modal-close-btn" id="close-admin-room-modal" aria-label="Закрыть">&times;</button>
+            
+            <div class="modal-header">
+                <h3 id="admin-room-modal-title">Редактирование комнаты</h3>
+                <p id="admin-room-modal-subtitle">Заполните поля ниже для сохранения настроек переговорной комнаты.</p>
+            </div>
+            
+            <form class="modal-form" id="admin-room-form" onsubmit="return false;">
+                <input type="hidden" id="admin-room-id">
+                
+                <div class="form-group">
+                    <label for="admin-room-name">Название комнаты</label>
+                    <input type="text" id="admin-room-name" class="form-input" placeholder="например, Creative Hub" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="admin-room-price">Стоимость аренды (₽/час)</label>
+                    <input type="number" id="admin-room-price" class="form-input" placeholder="800" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="admin-room-capacity">Вместимость</label>
+                    <input type="text" id="admin-room-capacity" class="form-input" placeholder="например, 5 - 10 человек" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="admin-room-desc">Описание</label>
+                    <textarea id="admin-room-desc" class="form-input" style="height: 100px; resize: vertical;" placeholder="Краткое описание переговорной зоны..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="admin-room-image">Изображение (пресет)</label>
+                    <select id="admin-room-image" class="form-input" style="background: var(--bg-card); color: var(--text-primary); cursor: pointer;" required>
+                        <option value="images/deep_focus.png">Focus Room (уединенная кабина)</option>
+                        <option value="images/glass_box.png">Collaboration Hub (стеклянный куб)</option>
+                        <option value="images/boardroom.png">Executive Boardroom (зал заседаний)</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem; width: 100%;" id="admin-room-submit-btn">Сохранить изменения</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- --- TOAST CONTAINER FOR REAL-TIME SIMULATION --- -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="app.js?v=1.0.1"></script>
+</body>
+</html>

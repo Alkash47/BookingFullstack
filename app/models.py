@@ -23,6 +23,10 @@ class Room(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(index=True, unique=True)
     slots: str  # JSON or comma-separated predefined slots
+    price: int = Field(default=1000)
+    description: Optional[str] = Field(default="Современная переговорная комната")
+    capacity: Optional[str] = Field(default="1 - 10 человек")
+    image_url: Optional[str] = Field(default="images/glass_box.png")
     bookings: list["Booking"] = Relationship(back_populates="room")
 
 
@@ -31,7 +35,9 @@ class Booking(SQLModel, table=True):
     room_id: int = Field(foreign_key="room.id")
     user_id: int = Field(foreign_key="user.id")
     date: date
-    slot_id: int = Field(foreign_key="slot.id")
+    start_time: time
+    end_time: time
+    slot_id: int = Field(default=1, foreign_key="slot.id")
 
     user: Optional[User] = Relationship(back_populates="bookings")
     room: Optional[Room] = Relationship(back_populates="bookings")
