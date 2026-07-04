@@ -567,8 +567,6 @@ function validateBookingTime() {
     updateCalculations();
 }
 
-
-
 // --- UPDATE CALCULATIONS & SUMMARY ---
 function updateCalculations(customTotalPrice = null) {
     const currentRoom = roomsData.find(r => r.id === selectedRoomId);
@@ -1337,4 +1335,3 @@ async function deleteAdminRoom(roomId) {
         showToast(err.message);
     }
 }
-

@@ -11,6 +11,7 @@ from . import models, crud, auth, database, schemas
 app = FastAPI(title="Meeting Room Booking")
 
 
+# Trivial reload comment 3
 @app.get("/health")
 async def health_check():
     """Healthcheck для Railway — возвращает статус сервиса."""

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEXUS // Аренда умных переговорных комнат внутри офиса</title>
     <meta name="description" content="Забронируйте премиальные, акустически изолированные переговорные комнаты с умным оборудованием. Почасовая оплата, мгновенный доступ, современный B&W дизайн.">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=1.0.3">
 </head>
 <body>
 
@@ -156,6 +156,8 @@
                                     </div>
                                     
                                     <div class="timeline-slider-wrapper">
+                                        <div class="timeline-thumb-label" id="timeline-start-label">09:00</div>
+                                        <div class="timeline-thumb-label" id="timeline-end-label">10:00</div>
                                         <div class="timeline-track-bg"></div>
                                         <div class="timeline-occupied-slots" id="timeline-occupied-slots"></div>
                                         <div class="timeline-selected-range" id="timeline-selected-range"></div>
@@ -173,6 +175,17 @@
                                         <span>18:00</span>
                                         <span>20:00</span>
                                         <span>22:00</span>
+                                    </div>
+
+                                    <div class="timeline-time-inputs">
+                                        <div class="time-input-group">
+                                            <label for="timeline-start-input">Начало:</label>
+                                            <input type="time" id="timeline-start-input" min="08:00" max="22:00" step="300">
+                                        </div>
+                                        <div class="time-input-group">
+                                            <label for="timeline-end-input">Конец:</label>
+                                            <input type="time" id="timeline-end-input" min="08:00" max="22:00" step="300">
+                                        </div>
                                     </div>
                                 </div>
 
@@ -632,6 +645,6 @@
     <!-- --- TOAST CONTAINER FOR REAL-TIME SIMULATION --- -->
     <div class="toast-container" id="toast-container"></div>
 
-    <script src="app.js?v=1.0.1"></script>
+    <script src="app_v4.js"></script>
 </body>
 </html>

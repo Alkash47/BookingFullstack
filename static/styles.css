@@ -1820,6 +1820,28 @@ footer {
     border: none;
 }
 
+.timeline-thumb-label {
+    position: absolute;
+    top: -24px;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 5;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.light-theme .timeline-thumb-label {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
 /* Timeline Labels */
 .timeline-labels {
     display: flex;
@@ -1839,4 +1861,52 @@ footer {
 }
 .timeline-labels span:last-child {
     text-align: right;
+}
+
+/* Timeline Manual Inputs */
+.timeline-time-inputs {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1.25rem;
+    justify-content: center;
+    align-items: center;
+}
+.time-input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.time-input-group label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.time-input-group input[type="time"] {
+    width: 100px;
+    padding: 0.4rem 0.6rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+    transition: var(--transition-fast);
+    cursor: pointer;
+}
+.light-theme .time-input-group input[type="time"] {
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.time-input-group input[type="time"]:focus {
+    border-color: var(--text-primary);
+    outline: none;
+}
+.time-input-group input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+.light-theme .time-input-group input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(0);
 }
