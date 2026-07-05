@@ -55,6 +55,7 @@
 html {
     scroll-behavior: smooth;
     font-size: 16px;
+    overflow-x: clip;
 }
 
 body {
@@ -62,7 +63,7 @@ body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
     line-height: 1.6;
-    overflow-x: hidden;
+    overflow-x: clip;
     transition: background-color 0.5s ease, color 0.5s ease;
 }
 
@@ -669,6 +670,8 @@ nav a:hover, nav a.active {
     cursor: pointer;
     transition: var(--transition-fast);
     background: var(--bg-card);
+    white-space: normal;
+    word-wrap: break-word;
 }
 
 .option-btn:hover {
@@ -690,6 +693,8 @@ nav a:hover, nav a.active {
 .option-btn span {
     font-size: 0.85rem;
     font-weight: 500;
+    white-space: normal;
+    display: block;
 }
 
 /* Custom slider design */
@@ -1685,6 +1690,19 @@ footer {
 }
 
 @media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+    }
+
+    .header-actions {
+        gap: 0.75rem;
+    }
+
+    .auth-header-btn {
+        padding: 0.4rem 0.75rem !important;
+        font-size: 0.8rem !important;
+    }
+
     .mobile-menu-toggle {
         display: flex;
     }
@@ -1791,7 +1809,11 @@ footer {
         align-items: flex-start;
     }
     .options-grid {
-        grid-template-columns: 1fr;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
     }
     .slots-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1804,30 +1826,23 @@ footer {
     .calc-card {
         padding: 1.5rem;
     }
+    .timeline-time-inputs {
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+        width: 100% !important;
+    }
+    .timeline-container, .timeline-slider-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    .timeline-labels {
+        display: none !important;
+    }
 }
 
 @media (max-width: 480px) {
     .calc-card {
         padding: 1rem;
-    }
-
-    .timeline-time-inputs {
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-
-    .timeline-labels span {
-        width: auto;
-        font-size: 0.65rem;
-    }
-
-    /* Скрываем некоторые метки времени, чтобы избежать горизонтального переполнения */
-    .timeline-labels span:nth-child(2),
-    .timeline-labels span:nth-child(3),
-    .timeline-labels span:nth-child(5),
-    .timeline-labels span:nth-child(6),
-    .timeline-labels span:nth-child(7) {
-        display: none;
     }
 }
 
@@ -1921,7 +1936,8 @@ footer {
 }
 .timeline-thumb-input {
     position: absolute;
-    width: 100%;
+    width: 100% !important;
+    min-width: 0 !important;
     height: 32px;
     background: transparent;
     pointer-events: none;
