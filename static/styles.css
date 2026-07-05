@@ -812,9 +812,16 @@ nav a:hover, nav a.active {
 .summary-row {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 1rem;
     font-size: 0.9rem;
     color: var(--text-secondary);
+    gap: 1rem;
+}
+
+.summary-row span:last-child {
+    text-align: right;
+    word-break: break-word;
 }
 
 .summary-row.total {
@@ -1085,11 +1092,16 @@ nav a:hover, nav a.active {
     height: 32px;
     border-radius: 50%;
     border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: var(--transition-fast);
+    padding: 0;
 }
 
 .modal-close-btn:hover {
@@ -1133,11 +1145,22 @@ nav a:hover, nav a.active {
 
 .form-input {
     background: var(--bg-card);
+    color: var(--text-primary);
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 0.9rem 1.2rem;
     font-size: 0.95rem;
     transition: var(--transition-fast);
+}
+
+select option {
+    background-color: #161616;
+    color: #ffffff;
+}
+
+.light-theme select option {
+    background-color: #ffffff;
+    color: #000000;
 }
 
 .form-input:focus {
@@ -1777,6 +1800,34 @@ footer {
         flex-direction: column;
         align-items: flex-start;
         gap: 1rem;
+    }
+    .calc-card {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .calc-card {
+        padding: 1rem;
+    }
+
+    .timeline-time-inputs {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .timeline-labels span {
+        width: auto;
+        font-size: 0.65rem;
+    }
+
+    /* Скрываем некоторые метки времени, чтобы избежать горизонтального переполнения */
+    .timeline-labels span:nth-child(2),
+    .timeline-labels span:nth-child(3),
+    .timeline-labels span:nth-child(5),
+    .timeline-labels span:nth-child(6),
+    .timeline-labels span:nth-child(7) {
+        display: none;
     }
 }
 
