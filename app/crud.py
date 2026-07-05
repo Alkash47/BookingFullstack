@@ -1,8 +1,8 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from datetime import date, time
-from .models import User, Room, Booking, Slot
+from datetime import date, time, datetime
+from .models import User, Room, Booking, Slot, RefreshToken
 
 
 async def get_user_by_username(session: AsyncSession, username: str):
@@ -111,3 +111,36 @@ async def find_booking_conflict(session: AsyncSession, room_id: int, date_: date
         )
     )
     return result.scalars().first()
+
+
+async def create_refresh_token(session: AsyncSession, user_id: int, token_str: str, expires_at: datetime):
+    """Создать новый рефреш-токен в базе данных."""
+    db_token = RefreshToken(user_id=user_id, token=token_str, expires_at=expires_at)
+    session.add(db_token)
+    await session.commit()
+    await session.refresh(db_token)
+    return db_token
+
+
+async def get_refresh_token(session: AsyncSession, token_str: str):
+    """Найти рефреш-токен в базе данных."""
+    result = await session.execute(select(RefreshToken).where(RefreshToken.token == token_str))
+    return result.scalars().first()
+
+
+async def delete_refresh_token(session: AsyncSession, token_str: str):
+    """Удалить рефреш-токен из базы данных."""
+    db_token = await get_refresh_token(session, token_str)
+    if db_token:
+        await session.delete(db_token)
+        await session.commit()
+        return True
+    return False
+
+
+async def delete_user_refresh_tokens(session: AsyncSession, user_id: int):
+    """Удалить все рефреш-токены конкретного пользователя (выход на всех устройствах)."""
+    from sqlalchemy import delete
+    await session.execute(delete(RefreshToken).where(RefreshToken.user_id == user_id))
+    await session.commit()
+

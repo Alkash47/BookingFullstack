@@ -1,12 +1,29 @@
 import os
-from fastapi import FastAPI, Depends, HTTPException, status
+import secrets
+from fastapi import FastAPI, Depends, HTTPException, status, Response, Cookie
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from datetime import date, timedelta, time
+from datetime import date, timedelta, time, datetime, timezone
 from . import models, crud, auth, database, schemas
+
+moscow_tz = timezone(timedelta(hours=3))
+
+
+def set_refresh_token_cookie(response: Response, token: str):
+    is_production = bool(os.getenv("RAILWAY_ENVIRONMENT") or os.getenv("PRODUCTION"))
+    response.set_cookie(
+        key="refresh_token",
+        value=token,
+        httponly=True,
+        secure=is_production,
+        samesite="lax",
+        max_age=7 * 24 * 3600,  # 7 дней
+        path="/auth"
+    )
+
 
 app = FastAPI(title="Meeting Room Booking")
 
@@ -143,28 +160,106 @@ async def on_startup():
 # ==========================================
 
 @app.post("/auth/token", response_model=schemas.Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), session: AsyncSession = Depends(database.get_session)):
-    """Аутентифицировать пользователя и вернуть JWT-токен доступа."""
+async def login_for_access_token(
+    response: Response,
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    session: AsyncSession = Depends(database.get_session)
+):
+    """Аутентифицировать пользователя, вернуть JWT-токен и установить куку Refresh Token."""
     user = await crud.get_user_by_username(session, form_data.username)
     if not user or not auth.verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect username or password")
+    
     access_token_expires = timedelta(minutes=auth.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = auth.create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
+    
+    # Генерация и сохранение Refresh Token в БД
+    refresh_token_str = secrets.token_hex(64)
+    expires_at = datetime.utcnow() + timedelta(days=7)
+    await crud.create_refresh_token(session, user.id, refresh_token_str, expires_at)
+    
+    # Установка HttpOnly куки
+    set_refresh_token_cookie(response, refresh_token_str)
+    
     return {"access_token": access_token, "token_type": "bearer"}
 
 
 @app.post("/auth/register", status_code=201)
-async def register_user(user_data: schemas.UserRegister, session: AsyncSession = Depends(database.get_session)):
-    """Зарегистрировать нового пользователя."""
+async def register_user(
+    response: Response,
+    user_data: schemas.UserRegister,
+    session: AsyncSession = Depends(database.get_session)
+):
+    """Зарегистрировать нового пользователя, выдать JWT-токен и Refresh Token."""
     existing = await crud.get_user_by_username(session, user_data.username)
     if existing:
         raise HTTPException(status_code=409, detail="Username already exists")
     hashed = auth.get_password_hash(user_data.password)
     user = await crud.create_user(session, user_data.username, hashed, user_data.full_name)
-    # Сразу выдаём токен после регистрации
+    
+    # Сразу выдаём токены после регистрации
     access_token_expires = timedelta(minutes=auth.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = auth.create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
+    
+    # Генерация и сохранение Refresh Token в БД
+    refresh_token_str = secrets.token_hex(64)
+    expires_at = datetime.utcnow() + timedelta(days=7)
+    await crud.create_refresh_token(session, user.id, refresh_token_str, expires_at)
+    
+    # Установка HttpOnly куки
+    set_refresh_token_cookie(response, refresh_token_str)
+    
     return {"access_token": access_token, "token_type": "bearer", "user": {"id": user.id, "username": user.username, "full_name": user.full_name}}
+
+
+@app.post("/auth/refresh")
+async def refresh_access_token(
+    response: Response,
+    refresh_token: str | None = Cookie(None),
+    session: AsyncSession = Depends(database.get_session)
+):
+    """Обновить JWT access_token с использованием ротации Refresh Token."""
+    if not refresh_token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token missing")
+    
+    db_token = await crud.get_refresh_token(session, refresh_token)
+    if not db_token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+    
+    if db_token.expires_at < datetime.utcnow():
+        await crud.delete_refresh_token(session, refresh_token)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token expired")
+    
+    user = await session.get(models.User, db_token.user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+    
+    # Ротация: удаляем старый, генерируем новый
+    await crud.delete_refresh_token(session, refresh_token)
+    
+    new_refresh_token_str = secrets.token_hex(64)
+    new_expires_at = datetime.utcnow() + timedelta(days=7)
+    await crud.create_refresh_token(session, user.id, new_refresh_token_str, new_expires_at)
+    
+    set_refresh_token_cookie(response, new_refresh_token_str)
+    
+    access_token_expires = timedelta(minutes=auth.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = auth.create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
+    
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+@app.post("/auth/logout")
+async def logout(
+    response: Response,
+    refresh_token: str | None = Cookie(None),
+    session: AsyncSession = Depends(database.get_session)
+):
+    """Выйти из системы (удалить сессию Refresh Token из БД и очистить куки)."""
+    if refresh_token:
+        await crud.delete_refresh_token(session, refresh_token)
+    response.delete_cookie(key="refresh_token", path="/auth")
+    return {"status": "success", "message": "Logged out successfully"}
 
 
 @app.get("/auth/me")
@@ -291,6 +386,23 @@ async def create_booking(
     session: AsyncSession = Depends(database.get_session),
 ):
     """Создать новое бронирование комнаты для авторизованного пользователя."""
+    # 1. Проверка времени: начало должно быть строго раньше окончания
+    if b.start_time >= b.end_time:
+        raise HTTPException(status_code=400, detail="Start time must be before end time")
+
+    # 2. Определение текущего времени по часовому поясу МСК
+    now_moscow = datetime.now(moscow_tz)
+    today_moscow = now_moscow.date()
+
+    # 3. Запрет бронирования на прошедшие даты
+    if b.date < today_moscow:
+        raise HTTPException(status_code=400, detail="Cannot book in the past")
+
+    # 4. Если бронь на сегодня, начало должно быть в будущем
+    if b.date == today_moscow:
+        if b.start_time < now_moscow.time():
+            raise HTTPException(status_code=400, detail="Start time cannot be in the past")
+
     conflict = await crud.find_booking_conflict(session, b.room_id, b.date, b.start_time, b.end_time)
     if conflict:
         raise HTTPException(status_code=409, detail="Time interval already booked")

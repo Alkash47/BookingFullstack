@@ -1,6 +1,52 @@
 // NEXUS Meeting Room Booking App Logic
 const API_BASE = window.location.origin;
 
+// Global Fetch Interceptor to handle Refresh Token rotation
+const originalFetch = window.fetch;
+window.fetch = async function (url, options = {}) {
+    // Ensure credentials option is set for auth requests so cookies are sent/received
+    if (url.includes('/auth/refresh') || url.includes('/auth/token') || url.includes('/auth/logout')) {
+        options.credentials = 'include';
+    }
+
+    let response = await originalFetch(url, options);
+
+    // If access token is expired (401), try to refresh it
+    if (response.status === 401 && !url.includes('/auth/refresh') && !url.includes('/auth/token')) {
+        try {
+            const refreshRes = await originalFetch(`${API_BASE}/auth/refresh`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+
+            if (refreshRes.ok) {
+                const data = await refreshRes.json();
+                localStorage.setItem('token', data.access_token);
+
+                // Update Authorization header in the retried request
+                if (!options.headers) {
+                    options.headers = {};
+                }
+                if (options.headers.Authorization) {
+                    options.headers.Authorization = `Bearer ${data.access_token}`;
+                } else if (options.headers['Authorization']) {
+                    options.headers['Authorization'] = `Bearer ${data.access_token}`;
+                }
+
+                // Retry the original request
+                response = await originalFetch(url, options);
+            } else {
+                // Refresh failed, clean up token (user will need to re-authenticate)
+                localStorage.removeItem('token');
+            }
+        } catch (err) {
+            console.error('Failed to auto-refresh token:', err);
+        }
+    }
+    return response;
+};
+
+
 // State management
 let currentUser = null;
 let roomsData = [];
@@ -804,6 +850,7 @@ function setupEventListeners() {
     authBtn.addEventListener('click', () => {
         if (currentUser) {
             if (confirm(`Выйти из аккаунта (${currentUser.username})?`)) {
+                fetch(`${API_BASE}/auth/logout`, { method: 'POST', credentials: 'include' }).catch(err => console.error(err));
                 localStorage.removeItem('token');
                 currentUser = null;
                 showToast('Вы успешно вышли из аккаунта');

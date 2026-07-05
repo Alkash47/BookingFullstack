@@ -13,7 +13,7 @@ if not SECRET_KEY:
     SECRET_KEY = "local-dev-insecure-key"
 
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 15
 
 
 # Используем pbkdf2_sha256, чтобы избежать проблем с бинарными зависимостями bcrypt на некоторых системах
