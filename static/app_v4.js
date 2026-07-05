@@ -502,6 +502,17 @@ function updateTimeline() {
         endLabelEl.style.left = `calc(${endPct}% + ${endOffset}px)`;
     }
     
+    // Prevent overlapping of tooltips when they are close
+    if (startLabelEl && endLabelEl) {
+        if (endMin - startMin < 75) {
+            startLabelEl.style.top = '-36px';
+            endLabelEl.style.top = '-12px';
+        } else {
+            startLabelEl.style.top = '';
+            endLabelEl.style.top = '';
+        }
+    }
+    
     // Синхронизируем текстовые поля времени
     const startInputTime = document.getElementById('timeline-start-input');
     const endInputTime = document.getElementById('timeline-end-input');
@@ -932,24 +943,89 @@ function setupEventListeners() {
     // Timeline range slider listeners
     const startValInput = document.getElementById('timeline-start-val');
     const endValInput = document.getElementById('timeline-end-val');
+    const timelineWrapper = document.querySelector('.timeline-slider-wrapper');
     
-    if (startValInput && endValInput) {
-        startValInput.addEventListener('input', updateTimeline);
-        endValInput.addEventListener('input', updateTimeline);
+    if (startValInput && endValInput && timelineWrapper) {
+        let activeSlider = null;
         
-        const bringStartToTop = () => {
-            startValInput.style.zIndex = '4';
-            endValInput.style.zIndex = '3';
-        };
-        const bringEndToTop = () => {
-            endValInput.style.zIndex = '4';
-            startValInput.style.zIndex = '3';
+        const handleDragStart = (e) => {
+            const rect = timelineWrapper.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+            
+            const minVal = parseInt(startValInput.min) || 480;
+            const maxVal = parseInt(startValInput.max) || 1320;
+            const clickedVal = minVal + pct * (maxVal - minVal);
+            
+            const startVal = parseInt(startValInput.value);
+            const endVal = parseInt(endValInput.value);
+            
+            // Find closer slider
+            if (Math.abs(clickedVal - startVal) < Math.abs(clickedVal - endVal)) {
+                activeSlider = startValInput;
+                startValInput.style.zIndex = '4';
+                endValInput.style.zIndex = '3';
+            } else {
+                activeSlider = endValInput;
+                endValInput.style.zIndex = '4';
+                startValInput.style.zIndex = '3';
+            }
+            
+            // Update value immediately on click/touch start
+            let newVal = Math.round(clickedVal / 5) * 5; // step = 5
+            
+            // Enforce constraints (start <= end - 5)
+            if (activeSlider === startValInput) {
+                const maxAllowed = parseInt(endValInput.value) - 5;
+                activeSlider.value = Math.min(maxAllowed, newVal);
+            } else {
+                const minAllowed = parseInt(startValInput.value) + 5;
+                activeSlider.value = Math.max(minAllowed, newVal);
+            }
+            updateTimeline();
+            
+            const handleDragMove = (moveEvent) => {
+                const moveClientX = moveEvent.touches ? moveEvent.touches[0].clientX : moveEvent.clientX;
+                const movePct = Math.max(0, Math.min(1, (moveClientX - rect.left) / rect.width));
+                let moveVal = minVal + movePct * (maxVal - minVal);
+                moveVal = Math.round(moveVal / 5) * 5;
+                
+                // Enforce constraints (start <= end - 5)
+                if (activeSlider === startValInput) {
+                    const maxAllowed = parseInt(endValInput.value) - 5;
+                    activeSlider.value = Math.min(maxAllowed, moveVal);
+                } else {
+                    const minAllowed = parseInt(startValInput.value) + 5;
+                    activeSlider.value = Math.max(minAllowed, moveVal);
+                }
+                updateTimeline();
+                
+                if (moveEvent.cancelable) {
+                    moveEvent.preventDefault(); // Prevent scrolling while dragging
+                }
+            };
+            
+            const handleDragEnd = () => {
+                document.removeEventListener('mousemove', handleDragMove);
+                document.removeEventListener('touchmove', handleDragMove);
+                document.removeEventListener('mouseup', handleDragEnd);
+                document.removeEventListener('touchend', handleDragEnd);
+                activeSlider = null;
+                loadSlots(); // Update validation and calculations
+            };
+            
+            document.addEventListener('mousemove', handleDragMove);
+            document.addEventListener('touchmove', handleDragMove, { passive: false });
+            document.addEventListener('mouseup', handleDragEnd);
+            document.addEventListener('touchend', handleDragEnd);
+            
+            if (e.cancelable) {
+                e.preventDefault(); // Prevent page scroll on touch start
+            }
         };
         
-        startValInput.addEventListener('mousedown', bringStartToTop);
-        startValInput.addEventListener('touchstart', bringStartToTop);
-        endValInput.addEventListener('mousedown', bringEndToTop);
-        endValInput.addEventListener('touchstart', bringEndToTop);
+        timelineWrapper.addEventListener('mousedown', handleDragStart);
+        timelineWrapper.addEventListener('touchstart', handleDragStart, { passive: false });
         
         // Initial update
         updateTimeline();

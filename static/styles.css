@@ -1746,6 +1746,9 @@ footer {
 
     /* Date Selector mobile adaptation (horizontal scroll) */
     .date-selector {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
         overflow-x: auto;
         white-space: nowrap;
         padding: 0.5rem 0.25rem 0.75rem;
@@ -1753,6 +1756,7 @@ footer {
         gap: 0.75rem;
         -webkit-overflow-scrolling: touch;
         scroll-snap-type: x mandatory;
+        box-sizing: border-box !important;
     }
 
     /* Hide scrollbar for Chrome, Safari and Opera */
@@ -1814,6 +1818,8 @@ footer {
         gap: 0.75rem !important;
         width: 100% !important;
         max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
     }
     .slots-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1825,6 +1831,13 @@ footer {
     }
     .calc-card {
         padding: 1.5rem;
+        box-sizing: border-box !important;
+    }
+    .calc-inputs, .step-group, .step-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
     }
     .timeline-time-inputs {
         flex-direction: column !important;
@@ -1834,6 +1847,8 @@ footer {
     .timeline-container, .timeline-slider-wrapper {
         width: 100% !important;
         max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
     }
     .timeline-labels {
         display: none !important;
