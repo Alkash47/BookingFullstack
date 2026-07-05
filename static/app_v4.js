@@ -825,6 +825,24 @@ async function cancelBooking(id) {
 
 // --- SETUP EVENT LISTENERS ---
 function setupEventListeners() {
+    // Mobile Menu Toggle
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const nav = document.querySelector('header nav');
+    if (mobileMenuToggle && nav) {
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenuToggle.classList.toggle('active');
+            nav.classList.toggle('active');
+        });
+
+        // Close menu when clicking nav links
+        nav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuToggle.classList.remove('active');
+                nav.classList.remove('active');
+            });
+        });
+    }
+
     // Extras options toggle click
     const extraButtons = document.querySelectorAll('#calc-extras .option-btn');
     extraButtons.forEach(btn => {
